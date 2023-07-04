@@ -39,28 +39,19 @@ class HolidayRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Holiday[] Returns an array of Holiday objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('h')
-//            ->andWhere('h.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('h.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function removeMany(mixed $entities, bool $flush = false): void
+    {
+        foreach ($entities as $entity) {
+            $this->getEntityManager()->remove($entity);
+        }
 
-//    public function findOneBySomeField($value): ?Holiday
-//    {
-//        return $this->createQueryBuilder('h')
-//            ->andWhere('h.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function wipe(): void
+    {
+        $this->removeMany($this->findAll(), true);
+    }
 }
