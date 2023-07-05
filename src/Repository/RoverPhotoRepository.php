@@ -67,28 +67,38 @@ class RoverPhotoRepository extends ServiceEntityRepository
         $this->removeMany($this->findAll(), true);
     }
 
-//    /**
-//     * @return RoverPhoto[] Returns an array of RoverPhoto objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /** @return RoverPhoto[] */
+    public function getPhotosWithinRange(
+        string $start  = NULL,
+        string $end    = NULL,
+        string $rover  = NULL,
+        string $camera = NULL
+    ): mixed
+    {
+        $query = $this->createQueryBuilder('r');
 
-//    public function findOneBySomeField($value): ?RoverPhoto
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if($start)
+        {
+            $query->andWhere('r.earthDate > :start')
+                ->setParameter('start', $start);
+        }
+        if($end)
+        {
+            $query->andWhere('r.earthDate < :end')
+                ->setParameter('end', $end);
+        }
+        if($rover)
+        {
+            $query->andWhere('r.roverName = :rover')
+                ->setParameter('rover', $rover);
+        }
+        if($camera)
+        {
+            $query->andWhere('r.cameraName = :camera')
+                ->setParameter('camera', $camera);
+        }
+
+        return $query->getQuery()->getResult();
+    }
+
 }
