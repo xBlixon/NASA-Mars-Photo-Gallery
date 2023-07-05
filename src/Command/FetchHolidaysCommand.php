@@ -45,11 +45,12 @@ class FetchHolidaysCommand extends Command
         foreach ($json as $item)
         {
             $holiday = new Holiday();
-            $holiday->setName($item->name[0]->text);
-            $holiday->setNationwide($item->nationwide);
-            $holiday->setType($item->type);
-            $holiday->setStartDate(new \DateTime($item->startDate));
-            $holiday->setEndDate(new \DateTime($item->endDate));
+            $holiday->setName($item->name[0]->text)
+                ->setNationwide($item->nationwide)
+                ->setType($item->type)
+                ->setStartDate(new \DateTime($item->startDate))
+                ->setEndDate(new \DateTime($item->endDate))
+                ;
             $this->entityManager->persist($holiday);
         }
         $this->entityManager->flush();
