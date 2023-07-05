@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PhotosController extends AbstractController
 {
     #[Route('/api', name: 'api_photos')]
-    public function index(Request $request, RoverPhotoRepository $photoRepository): JsonResponse
+    public function photos(Request $request, RoverPhotoRepository $photoRepository): JsonResponse
     {
         $startDate   = $request->query->get('start_date');
         $endDate     = $request->query->get('end_date');
@@ -41,5 +41,11 @@ class PhotosController extends AbstractController
             $allPhotos[] = $photoArray;
         }
         return $allPhotos;
+    }
+
+    #[Route(path: "/api/photo/{id<\d+>}", name: "api_photos_single-photo")]
+    public function singlePhoto(): JsonResponse
+    {
+        return $this->json([]);
     }
 }
