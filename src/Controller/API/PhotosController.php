@@ -26,7 +26,9 @@ class PhotosController extends AbstractController
             rover: $roverName,
             camera: $camera
         );
-        return $this->json($this->manyPhotosToArray($photos));
+        $arrayPhotos = $this->manyPhotosToArray($photos);
+        $this->unsetKeyInMany($arrayPhotos, "image_url");
+        return $this->json($arrayPhotos);
     }
 
     #[Route(path: "/api/photo/{id<\d+>}", name: "api_photos_single-photo")]
@@ -56,5 +58,12 @@ class PhotosController extends AbstractController
             $allPhotos[] = $this->photoToArray($photo);
         }
         return $allPhotos;
+    }
+
+    private function unsetKeyInMany(array &$array, string $key)
+    {
+        foreach ($array as &$subarray) {
+            unset($subarray[$key]);
+        }
     }
 }
