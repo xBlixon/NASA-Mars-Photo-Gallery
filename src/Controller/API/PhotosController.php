@@ -7,6 +7,7 @@ use App\Repository\RoverPhotoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PhotosController extends AbstractController
@@ -25,27 +26,35 @@ class PhotosController extends AbstractController
             rover: $roverName,
             camera: $camera
         );
-        return $this->json($this->photosToArray($photos));
-    }
-    /** @param RoverPhoto[] $photos */
-    private function photosToArray(mixed $photos): array
-    {
-        $allPhotos = [];
-        foreach ($photos as $photo) {
-            $photoArray = [];
-            $photoArray['id']          = $photo->getId();
-            $photoArray['rover_name']  = $photo->getRoverName();
-            $photoArray['camera_name'] = $photo->getCameraName();
-            $photoArray['earth_date']  = $photo->getEarthDate()->format('Y-m-d');
-            $photoArray['image_url']   = $photo->getImageURL();
-            $allPhotos[] = $photoArray;
-        }
-        return $allPhotos;
+        return $this->json($this->manyPhotosToArray($photos));
     }
 
     #[Route(path: "/api/photo/{id<\d+>}", name: "api_photos_single-photo")]
-    public function singlePhoto(): JsonResponse
+    public function singlePhoto(RoverPhoto $photo): JsonResponse
     {
-        return $this->json([]);
+        $photoArray = $this->photoToArray($photo);
+        unset($photoArray['id']);
+        return $this->json($photoArray);
+    }
+
+    private function photoToArray(RoverPhoto $photo): array
+    {
+        $photoArray = [];
+        $photoArray['id']          = $photo->getId();
+        $photoArray['rover_name']  = $photo->getRoverName();
+        $photoArray['camera_name'] = $photo->getCameraName();
+        $photoArray['earth_date']  = $photo->getEarthDate()->format('Y-m-d');
+        $photoArray['image_url']   = $photo->getImageURL();
+        return $photoArray;
+    }
+
+    /** @param RoverPhoto[] $photos */
+    private function manyPhotosToArray(mixed $photos): array
+    {
+        $allPhotos = [];
+        foreach ($photos as $photo) {
+            $allPhotos[] = $this->photoToArray($photo);
+        }
+        return $allPhotos;
     }
 }

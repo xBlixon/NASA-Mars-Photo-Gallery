@@ -79,11 +79,15 @@ class RoverPhotoRepository extends ServiceEntityRepository
 
         if($start)
         {
+            // subtract 1 day
+            $start = (new \DateTime($start))->modify("-1 day")->format("Y-m-d");
             $query->andWhere('r.earthDate > :start')
                 ->setParameter('start', $start);
         }
         if($end)
         {
+            // add 1 day
+            $end = (new \DateTime($end))->modify("+1 day")->format("Y-m-d");
             $query->andWhere('r.earthDate < :end')
                 ->setParameter('end', $end);
         }
@@ -97,7 +101,6 @@ class RoverPhotoRepository extends ServiceEntityRepository
             $query->andWhere('r.cameraName = :camera')
                 ->setParameter('camera', $camera);
         }
-
         return $query->getQuery()->getResult();
     }
 
