@@ -5,14 +5,10 @@ namespace App\Command;
 use App\Entity\RoverPhoto;
 use App\Repository\HolidayRepository;
 use App\Repository\RoverPhotoRepository;
-use Doctrine\DBAL\Types\StringType;
-use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -23,7 +19,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class FetchRoverPhotosCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
         private HolidayRepository $holidayRepository,
         private RoverPhotoRepository $roverPhotoRepository
     ){
@@ -51,7 +46,7 @@ class FetchRoverPhotosCommand extends Command
                     $json = json_decode($this->getPhotosFromDate($date, $roverName));
                     $allPhotos = array_merge($allPhotos, $this->jsonToRoverPhotosEntities($json));
                     $io->write('.');
-                    usleep(500000); //0.5s
+                    usleep(500000); //0.5s - kept giving api error without a delay.
                 }
             }
         }
