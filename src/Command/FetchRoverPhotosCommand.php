@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:fetch-rover-photos',
-    description: 'Add a short description for your command',
+    description: 'Fetches rover photos based on dates defined in the holiday table',
 )]
 class FetchRoverPhotosCommand extends Command
 {
